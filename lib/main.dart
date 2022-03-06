@@ -1,42 +1,91 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 // import 'card.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized(); //initialise firebase
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
-
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Museum Guide',
-      home: MyHomePage(),
-      
-    );
+        title: 'Museum Guide',
+        home: Container(
+          height: 200,
+          width: 200,
+          //   constraints: BoxConstraints.expand(height: 200, width: 200),
+          padding: const EdgeInsets.all(8.0),
+          color: Colors.blue[600],
+          alignment: Alignment.center,
+          child: retrieveUserData(),
+        )
+
+        //   MyHomePage(),
+        );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-    Widget build(BuildContext context) {
-        return(
-           ElevatedButton(
-                    child: Text("Start"),
-                    onPressed(){
-
-                    }
-                )
-            
-        );
-
-    } 
-
+  Widget build(BuildContext context) {
+    return (Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Column(children: [
+          retrieveUserData(),
+          ElevatedButton(
+            child: Text("Start"),
+            onPressed: () {
+              // print("hello world");
+            },
+          )
+        ])
+      ],
+    ));
+  }
 }
 
-//   const MyHomePage({Key? key, required this.title}) : super(key: key);
+class retrieveUserData extends StatelessWidget {
+  final Stream<QuerySnapshot> users =
+      FirebaseFirestore.instance.collection('users').snapshots();
+  Widget build(BuildContext context) {
+    return (StreamBuilder(
+        stream: users,
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.hasError) {
+            return Text('error');
+          }
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Text('Loading...');
+          }
+          final data = snapshot.requireData;
+          return ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: data.size,
+            itemBuilder: (context, index) {
+              return Text(
+                  'username is ${data.docs[index]['username']} and has a user level of ${data.docs[index]['username']}',
+                  style: TextStyle(
+                      color: Colors.yellow,
+                      fontFamily: 'Roboto',
+                      fontSize: 20));
+            },
+          );
+        }));
+  }
+}
 
+
+
+
+
+
+//   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
 //   // This widget is the home page of your application. It is stateful, meaning
 //   // that it has a State object (defined below) that contains fields that affect
@@ -48,7 +97,6 @@ class MyHomePage extends StatelessWidget {
 //   // always marked "final".
 
 //   final String title;
-  
 
 //   @override
 //   State<MyHomePage> createState() => _MyHomePageState();
