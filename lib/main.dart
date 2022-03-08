@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-// import 'card.dart';
+import 'index.dart';
+import 'httpReq.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //initialise firebase
@@ -15,36 +16,39 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'Museum Guide',
-        home: Container(
-          height: 200,
-          width: 200,
-          //   constraints: BoxConstraints.expand(height: 200, width: 200),
-          padding: const EdgeInsets.all(8.0),
-          color: Colors.blue[600],
-          alignment: Alignment.center,
-          child: retrieveUserData(),
-        )
-
-        //   MyHomePage(),
-        );
+      initialRoute: '/home',
+      routes: {
+        '/home': (context) => MyHomePage(),
+        '/test': (context) => Expanded(child: retrieveUserData()),
+        '/museum-data': (context) => MuseumData(),
+      },
+      title: 'Museum Guide',
+    );
   }
 }
 
 class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return (Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Column(children: [
-          retrieveUserData(),
-          ElevatedButton(
-            child: Text("Start"),
-            onPressed: () {
-              // print("hello world");
-            },
-          )
-        ])
+        Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                child: Text("Start"),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/test');
+                },
+              ),
+              ElevatedButton(
+                child: Text("Museum-data"),
+                onPressed: () {
+                  Navigator.pushNamed(context, '/museum-data');
+                },
+              )
+            ])
       ],
     ));
   }
@@ -65,25 +69,21 @@ class retrieveUserData extends StatelessWidget {
           }
           final data = snapshot.requireData;
           return ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: data.size,
-            itemBuilder: (context, index) {
-              return Text(
-                  'username is ${data.docs[index]['username']} and has a user level of ${data.docs[index]['username']}',
-                  style: TextStyle(
-                      color: Colors.yellow,
-                      fontFamily: 'Roboto',
-                      fontSize: 20));
-            },
-          );
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: data.size,
+              itemBuilder: (context, index) {
+                return Expanded(
+                    child: Container(
+                        height: height15,
+                        width: logicalScreenSize.width / 2,
+                        alignment: Alignment.center,
+                        color: Colors.yellow,
+                        child: Text('${data.docs[index]['username']}')));
+              });
         }));
   }
 }
-
-
-
-
-
 
 //   const MyHomePage({Key? key, required this.title}) : super(key: key);
 
