@@ -3,12 +3,19 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'index.dart';
 import 'httpReq.dart';
+import 'Pages/Home.dart';
+import 'Pages/Collection.dart';
+import 'Pages/ItemView.dart';
+import 'Pages/NFCCard.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //initialise firebase
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
+
+var itemId = "0";
+var nfcItemId = 0;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -20,37 +27,23 @@ class MyApp extends StatelessWidget {
       routes: {
         '/home': (context) => MyHomePage(),
         '/test': (context) => Expanded(child: retrieveUserData()),
-        '/museum-data': (context) => MuseumData(),
+        // '/museum-data': (context) => MuseumData(),
+        '/view-collection': (context) => Collection(),
+        // 'nfc-test': (context) => _tagRead,
+        '/item-view': (context) {
+          return (Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.deepPurple[500],
+              title: Text('Item'),
+            ),
+            body: ItemView(
+              id: itemId,
+            ),
+          ));
+        }
       },
       title: 'Museum Guide',
     );
-  }
-}
-
-class MyHomePage extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return (Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                child: Text("Start"),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/test');
-                },
-              ),
-              ElevatedButton(
-                child: Text("Museum-data"),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/museum-data');
-                },
-              )
-            ])
-      ],
-    ));
   }
 }
 
