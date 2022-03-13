@@ -25,22 +25,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/home',
       routes: {
+        '/nfc': (context) => NFCReader(),
         '/home': (context) => MyHomePage(),
         '/test': (context) => Expanded(child: retrieveUserData()),
         // '/museum-data': (context) => MuseumData(),
         '/view-collection': (context) => Collection(),
         // 'nfc-test': (context) => _tagRead,
-        '/item-view': (context) {
-          return (Scaffold(
-            appBar: AppBar(
-              backgroundColor: Colors.deepPurple[500],
-              title: Text('Item'),
-            ),
-            body: ItemView(
-              id: itemId,
-            ),
-          ));
-        }
+        // '/item-view': (context) {
+        //   return (Scaffold(
+        //     appBar: AppBar(
+        //       backgroundColor: Colors.deepPurple[500],
+        //       title: Text('Item'),
+        //     ),
+        //     body: ItemView(
+        //       id: itemId,
+        //     ),
+        //   ));
+        // }
       },
       title: 'Museum Guide',
     );

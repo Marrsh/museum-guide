@@ -37,7 +37,12 @@ dependencies:
   firebase_core: ^1.13.1
   cloud_firestore: ^3.1.10
   http: ^0.13.4
-  flutter_nfc_kit: "^3.2.0"
+  nfc_manager: ^3.1.1
+  nfc_in_flutter:
+    git:
+      url: https://github.com/vilvic/nfc_in_flutter
+      ref: master
+  # nfc_in_flutter: "^2.0.6"
 
 dev_dependencies:
   flutter_test:

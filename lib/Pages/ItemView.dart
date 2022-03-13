@@ -4,12 +4,13 @@ import 'package:museum_guide/index.dart';
 import 'package:museum_guide/museumModel.dart';
 
 class ItemView extends StatelessWidget {
-  const ItemView({required this.id});
-  final String id;
+  const ItemView({required this.museumModel});
+  final museumModel;
+
   @override
   Widget build(BuildContext context) {
     return (ListView(children: [
-      Image(image: NetworkImage(image)),
+      Image(image: NetworkImage(museumModel.image)),
       Container(
           transform: Matrix4.translationValues(0.0, -10.0, 0.0),
           //   height: 100,
@@ -44,7 +45,7 @@ class ItemView extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.all(10),
                   child: Text(
-                    title,
+                    museumModel.title,
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30,
@@ -60,57 +61,20 @@ class ItemView extends StatelessWidget {
             // ),
             // Divider(),
             Padding(
-              padding: EdgeInsets.all(3),
-              child: Container(
-                width: logicalScreenSize.width,
-                decoration: BoxDecoration(
-                    color: Colors.deepPurple[500],
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset: Offset(1, 2), // changes position of shadow
-                      )
-                    ]),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    exhibit,
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Roboto'),
-                  ),
-                ),
+              padding: EdgeInsets.all(10),
+              child: Text(
+                museumModel.exhibit,
+                style: TextStyle(
+                    color: Colors.blue, fontSize: 20, fontFamily: 'Roboto'),
               ),
             ),
+
             Padding(
-              padding: EdgeInsets.all(3),
-              child: Container(
-                width: logicalScreenSize.width,
-                decoration: BoxDecoration(
-                    color: Colors.deepPurple[500],
-                    borderRadius: BorderRadius.all(Radius.circular(10)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.5),
-                        spreadRadius: 1,
-                        blurRadius: 2,
-                        offset: Offset(1, 2), // changes position of shadow
-                      )
-                    ]),
-                child: Padding(
-                  padding: EdgeInsets.all(10),
-                  child: Text(
-                    '1980',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Roboto'),
-                  ),
-                ),
+              padding: EdgeInsets.all(10),
+              child: Text(
+                '1980',
+                style: TextStyle(
+                    color: Colors.blue, fontSize: 20, fontFamily: 'Roboto'),
               ),
             ),
             Padding(
@@ -129,7 +93,7 @@ class ItemView extends StatelessWidget {
 
 
 
-    //   child: Text(
+    // Color.fromARGB(255, 88, 68, 68)t(
     //       'Category',
     //       style: TextStyle(color: Colors.black.withOpacity(0.6)),
     //     ),

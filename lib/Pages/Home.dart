@@ -1,12 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
-
-import 'package:flutter_nfc_kit/flutter_nfc_kit.dart';
 import 'package:museum_guide/Pages/ItemView.dart';
 import 'package:museum_guide/httpReq.dart';
-import 'package:museum_guide/main.dart';
-import 'package:ndef/ndef.dart' as ndef;
+import 'package:museum_guide/museumModel.dart';
+
+import 'package:nfc_in_flutter/nfc_in_flutter.dart';
+import 'package:nfc_manager/nfc_manager.dart';
+// import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
+// import 'package:ndef/ndef.dart' as ndef;
 
 class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
@@ -38,40 +42,157 @@ class MyHomePage extends StatelessWidget {
               ElevatedButton(
                   child: Text("nfc"),
                   onPressed: () {
-                    _tagRead;
+                    Navigator.pushNamed(context, '/nfc');
+                    // NFCReader();
+                    // _tagRead;
                   })
             ])
       ],
     ));
   }
+}
 
-  //nfc
-  Future<void> _tagRead() async {
-    //add in checks if the tag is not what we are looking for.
-    var message;
-    var availability = await FlutterNfcKit.nfcAvailability;
-    if (availability != NFCAvailability.available) {
-      print('tag not accesible');
-      // oh-no
+class NFCReader extends StatefulWidget {
+  @override
+  _NFCReaderState createState() => _NFCReaderState();
+}
+
+class _NFCReaderState extends State {
+  bool _supportsNFC = false;
+  bool _reading = false;
+  late StreamSubscription<NDEFMessage> _stream;
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if the device supports NFC reading
+    NFC.isNDEFSupported.then((bool isSupported) {
+      setState(() {
+        _supportsNFC = isSupported;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_supportsNFC) {
+      return RaisedButton(
+        child: const Text("You device does not support NFC"),
+        onPressed: null,
+      );
     }
-    var tag = await FlutterNfcKit.poll(
-        timeout: Duration(seconds: 10),
-        iosMultipleTagMessage: "Multiple tags found!",
-        iosAlertMessage: "Scan your tag");
-    if (tag.ndefAvailable) {
-      for (var record in await FlutterNfcKit.readNDEFRecords(cached: false)) {
-        message = record;
-        // nfcItemId = message.text;
-        MuseumData(museumObjectId: message.text);
-        ItemView(id: message.text);
-        print(message.text);
-      }
-// Call finish() only once
-      await FlutterNfcKit.finish();
-// iOS only: show alert/error message on finish
-      await FlutterNfcKit.finish(iosAlertMessage: "Success");
-// or
-      await FlutterNfcKit.finish(iosErrorMessage: "Failed");
-    }
+
+    return RaisedButton(
+        child: Text(_reading ? "Stop reading" : "Start reading"),
+        onPressed: () {
+          if (_reading) {
+            _stream.cancel();
+            setState(() {
+              _reading = false;
+            });
+          } else {
+            setState(() {
+              _reading = true;
+              // Start reading using NFC.readNDEF()
+              _stream = NFC
+                  .readNDEF(
+                once: true,
+                throwOnUserCancel: false,
+              )
+                  .listen((NDEFMessage message) {
+                print(message.payload);
+                MuseumData(museumObjectId: message.data ?? 'co8821096');
+                Navigator.pushNamed(context, '/item-view');
+                // ItemView(id: id);
+              }, onError: (e) {
+                // Check error handling guide below
+              });
+            });
+          }
+        });
   }
 }
+//   //nfc
+//   Future<void> _tagRead() async {
+//     //add in checks if the tag is not what we are looking for.
+//     var message;
+//     var availability = await FlutterNfcKit.nfcAvailability;
+//     if (availability != NFCAvailability.available) {
+//       print('tag not accesible');
+//       // oh-no
+//     }
+//     // FlutterNfcKit.
+//     var tag = await FlutterNfcKit.poll(
+//         timeout: Duration(seconds: 10),
+//         iosMultipleTagMessage: "Multiple tags found!",
+//         iosAlertMessage: "Scan your tag");
+//     if (tag.ndefAvailable) {
+//       for (var record in await FlutterNfcKit.readNDEFRecords(cached: false)) {
+//         message = record;
+//         // nfcItemId = message.text;
+//         MuseumData(museumObjectId: message.text);
+//         ItemView(id: message.text);
+//         print(message.text);
+//       }
+// // Call finish() only once
+//       await FlutterNfcKit.finish();
+// // iOS only: show alert/error message on finish
+//       await FlutterNfcKit.finish(iosAlertMessage: "Success");
+// // or
+//       await FlutterNfcKit.finish(iosErrorMessage: "Failed");
+//     }
+//   }
+// }
+// class NfcScan extends StatefulWidget {
+//   NfcScan({Key? key}) : super(key: key);
+
+//   @override
+//   _NfcScanState createState() => _NfcScanState();
+// }
+
+// class _NfcScanState extends State<NfcScan> {
+//   TextEditingController writerController = TextEditingController();
+
+//   @override
+//   initState() {
+//     super.initState();
+//     writerController.text = 'Flutter NFC Scan';
+//     FlutterNfcReader.onTagDiscovered().listen((onData) {
+//       print(onData.id);
+//       print(onData.content);
+//     });
+//   }
+
+//   @override
+//   void dispose() {
+//     // Clean up the controller when the widget is removed from the
+//     // widget tree.
+//     writerController.dispose();
+//     super.dispose();
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: <Widget>[
+//         TextField(
+//           controller: writerController,
+//         ),
+//         RaisedButton(
+//           onPressed: () {
+//             FlutterNfcReader.read();
+//           },
+//           child: Text("Read"),
+//         ),
+//         RaisedButton(
+//           onPressed: () {
+//             FlutterNfcReader.write(" ", writerController.text).then((value) {
+//               print(value.content);
+//             });
+//           },
+//           child: Text("Write"),
+//         )
+//       ],
+//     );
+//   }
+// }

@@ -15,7 +15,7 @@ class MuseumData extends StatefulWidget {
       _MuseumDataState(museumObjectId: museumObjectId);
 }
 
-class _MuseumDataState extends State<MuseumData> {
+abstract class _MuseumDataState extends State<MuseumData> {
   _MuseumDataState({required this.museumObjectId});
   final String museumObjectId;
   @override
@@ -23,18 +23,9 @@ class _MuseumDataState extends State<MuseumData> {
     getData(museumObjectId);
     super.initState();
   }
-
-  @override
-  Widget build(BuildContext context) {
-    return (ItemView(
-      id: museumObjectId,
-    ));
-    // TODO: implement build
-    // throw UnimplementedError();
-  }
 }
 
-Future<http.Response> getData(String id) async {
+Future<void> getData(String id) async {
   Uri url = Uri.https('collection.sciencemuseumgroup.org.uk',
       '/search/museum/science-museum?page[size]=5');
   http.Response res = await http.get(
@@ -47,12 +38,12 @@ Future<http.Response> getData(String id) async {
   // Map<String, dynamic> d = json.decode(jsonStr.trim());
   LinkedHashMap<String, dynamic> body = cnv.jsonDecode(res.body);
   String firstTitle = body['data'][0]['attributes']['summary_title'];
-  title = firstTitle;
-
-  // museumModel(title: firstTitle,)
-  // model = body
-  //     .map((string data, dynamic items) => museumModel.fromJson(items))
-  //     .toList();
-  return res;
-  // print(res.body);
+  museumModel museumInstance = museumModel(
+      museum: 'test',
+      title: firstTitle,
+      year: '1980',
+      image: 'test',
+      exhibit: 'test',
+      desc: 'test',
+      id: id);
 }

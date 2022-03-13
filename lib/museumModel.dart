@@ -1,25 +1,17 @@
 class museumModel {
-  String? museum;
-  String? name;
-  String? title;
-  String? image;
-  String? exhibit;
-  String? desc;
-  String? year;
-  int? id;
   museumModel(
-      {this.museum,
-      this.title,
-      this.year,
-      this.image,
-      this.exhibit,
-      this.desc,
-      this.id});
+      {required this.museum,
+      required this.title,
+      required this.year,
+      required this.image,
+      required this.exhibit,
+      required this.desc,
+      required this.id});
+  final String museum;
+  final String title;
+  final String image;
+  final String exhibit;
+  final String desc;
+  final String year;
+  final String id;
 }
-
-var title = "test";
-var exhibit = "test";
-var id = "0";
-var desc = "test";
-var image =
-    "https://coimages.sciencemuseumgroup.org.uk/images/535/902/medium_D220092.jpg";
