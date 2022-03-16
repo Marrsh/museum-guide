@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:museum_guide/Pages/ItemView.dart';
 import 'package:museum_guide/httpReq.dart';
 import 'package:museum_guide/museumModel.dart';
-
+import 'package:museum_guide/main.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+
 // import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 // import 'package:ndef/ndef.dart' as ndef;
 
@@ -36,7 +37,7 @@ class MyHomePage extends StatelessWidget {
               ElevatedButton(
                 child: Text("item-view"),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/item-view');
+                  // Navigator.pushNamed(context, '/item-view');
                 },
               ),
               ElevatedButton(
@@ -85,6 +86,8 @@ class _NFCReaderState extends State {
     return RaisedButton(
         child: Text(_reading ? "Stop reading" : "Start reading"),
         onPressed: () {
+          // museumModel itemInfo = getMuseumItemData('co8821096');
+          String id = 'test';
           if (_reading) {
             _stream.cancel();
             setState(() {
@@ -101,14 +104,23 @@ class _NFCReaderState extends State {
               )
                   .listen((NDEFMessage message) {
                 print(message.payload);
-                MuseumData(museumObjectId: message.data ?? 'co8821096');
-                Navigator.pushNamed(context, '/item-view');
-                // ItemView(id: id);
+                // itemInfo = getMuseumItemData(message.data ?? 'co8821096');
+                id = message.data!;
+                Navigator.pushNamed(context, '/item-view',
+                    arguments: ScreenArguments(id));
+                // ItemView(itemInfo: itemInfo);
+                // _stream.cancel();
+
+                // ItemView();
               }, onError: (e) {
                 // Check error handling guide below
               });
             });
           }
+          // _stream.onDone(() {
+          // ItemView(id: id);
+
+          // });
         });
   }
 }

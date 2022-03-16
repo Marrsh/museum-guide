@@ -1,21 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:museum_guide/museumModel.dart';
 import 'index.dart';
 import 'httpReq.dart';
 import 'Pages/Home.dart';
 import 'Pages/Collection.dart';
 import 'Pages/ItemView.dart';
-import 'Pages/NFCCard.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); //initialise firebase
   await Firebase.initializeApp();
   runApp(const MyApp());
 }
-
-var itemId = "0";
-var nfcItemId = 0;
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -25,6 +22,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       initialRoute: '/home',
       routes: {
+        '/item-view': (context) => const ItemView(),
         '/nfc': (context) => NFCReader(),
         '/home': (context) => MyHomePage(),
         '/test': (context) => Expanded(child: retrieveUserData()),
@@ -78,6 +76,28 @@ class retrieveUserData extends StatelessWidget {
         }));
   }
 }
+
+// You can pass any object to the arguments parameter.
+// In this example, create a class that contains both
+// a customizable title and message.
+class ScreenArguments {
+  final String id;
+  // final String message;
+
+  ScreenArguments(this.id);
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 //   const MyHomePage({Key? key, required this.title}) : super(key: key);
 

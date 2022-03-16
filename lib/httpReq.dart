@@ -6,26 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:museum_guide/Pages/ItemView.dart';
 import 'museumModel.dart';
 
-// import 'm';
-class MuseumData extends StatefulWidget {
-  const MuseumData({required this.museumObjectId});
-  final String museumObjectId;
-  @override
-  _MuseumDataState createState() =>
-      _MuseumDataState(museumObjectId: museumObjectId);
-}
-
-abstract class _MuseumDataState extends State<MuseumData> {
-  _MuseumDataState({required this.museumObjectId});
-  final String museumObjectId;
-  @override
-  void initState() {
-    getData(museumObjectId);
-    super.initState();
-  }
-}
-
-Future<void> getData(String id) async {
+getMuseumItemData(String id) async {
   Uri url = Uri.https('collection.sciencemuseumgroup.org.uk',
       '/search/museum/science-museum?page[size]=5');
   http.Response res = await http.get(
@@ -34,16 +15,16 @@ Future<void> getData(String id) async {
         "Content-Type": "application/json",
         "Accept": "application/json"
       });
-  String jsonStr = res.body;
-  // Map<String, dynamic> d = json.decode(jsonStr.trim());
   LinkedHashMap<String, dynamic> body = cnv.jsonDecode(res.body);
-  String firstTitle = body['data'][0]['attributes']['summary_title'];
-  museumModel museumInstance = museumModel(
-      museum: 'test',
-      title: firstTitle,
-      year: '1980',
-      image: 'test',
-      exhibit: 'test',
-      desc: 'test',
-      id: id);
+
+  return (museumModel(
+      museum: body['data']['attributes']['categories'][0]['museum'],
+      title: body['data']['attributes']['summary_title'],
+      year: body['data']['attributes']['lifecycle']['creation'][0]['date'][0]
+          ['value'],
+      image: body['data']['attributes']['multimedia'][0]['processed']
+          ['large_thumbnail']['location'],
+      exhibit: body['data']['attributes']['categories'][0]['name'],
+      desc: body['data']['attributes']['description'][1]['value'],
+      id: id));
 }
