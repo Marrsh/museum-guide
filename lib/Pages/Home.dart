@@ -1,14 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:museum_guide/Pages/ItemView.dart';
-import 'package:museum_guide/httpReq.dart';
-import 'package:museum_guide/museumModel.dart';
 import 'package:museum_guide/main.dart';
 import 'package:nfc_in_flutter/nfc_in_flutter.dart';
-import 'package:nfc_manager/nfc_manager.dart';
 
 // import 'package:flutter_nfc_reader/flutter_nfc_reader.dart';
 // import 'package:ndef/ndef.dart' as ndef;
@@ -29,9 +23,9 @@ class MyHomePage extends StatelessWidget {
                 },
               ),
               ElevatedButton(
-                child: Text("Museum-data"),
+                child: Text("loaders"),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/museum-data');
+                  Navigator.pushNamed(context, '/loaders');
                 },
               ),
               ElevatedButton(
@@ -108,103 +102,11 @@ class _NFCReaderState extends State {
                 id = message.data!;
                 Navigator.pushNamed(context, '/item-view',
                     arguments: ScreenArguments(id));
-                // ItemView(itemInfo: itemInfo);
-                // _stream.cancel();
-
-                // ItemView();
               }, onError: (e) {
                 // Check error handling guide below
               });
             });
           }
-          // _stream.onDone(() {
-          // ItemView(id: id);
-
-          // });
         });
   }
 }
-//   //nfc
-//   Future<void> _tagRead() async {
-//     //add in checks if the tag is not what we are looking for.
-//     var message;
-//     var availability = await FlutterNfcKit.nfcAvailability;
-//     if (availability != NFCAvailability.available) {
-//       print('tag not accesible');
-//       // oh-no
-//     }
-//     // FlutterNfcKit.
-//     var tag = await FlutterNfcKit.poll(
-//         timeout: Duration(seconds: 10),
-//         iosMultipleTagMessage: "Multiple tags found!",
-//         iosAlertMessage: "Scan your tag");
-//     if (tag.ndefAvailable) {
-//       for (var record in await FlutterNfcKit.readNDEFRecords(cached: false)) {
-//         message = record;
-//         // nfcItemId = message.text;
-//         MuseumData(museumObjectId: message.text);
-//         ItemView(id: message.text);
-//         print(message.text);
-//       }
-// // Call finish() only once
-//       await FlutterNfcKit.finish();
-// // iOS only: show alert/error message on finish
-//       await FlutterNfcKit.finish(iosAlertMessage: "Success");
-// // or
-//       await FlutterNfcKit.finish(iosErrorMessage: "Failed");
-//     }
-//   }
-// }
-// class NfcScan extends StatefulWidget {
-//   NfcScan({Key? key}) : super(key: key);
-
-//   @override
-//   _NfcScanState createState() => _NfcScanState();
-// }
-
-// class _NfcScanState extends State<NfcScan> {
-//   TextEditingController writerController = TextEditingController();
-
-//   @override
-//   initState() {
-//     super.initState();
-//     writerController.text = 'Flutter NFC Scan';
-//     FlutterNfcReader.onTagDiscovered().listen((onData) {
-//       print(onData.id);
-//       print(onData.content);
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     // Clean up the controller when the widget is removed from the
-//     // widget tree.
-//     writerController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: <Widget>[
-//         TextField(
-//           controller: writerController,
-//         ),
-//         RaisedButton(
-//           onPressed: () {
-//             FlutterNfcReader.read();
-//           },
-//           child: Text("Read"),
-//         ),
-//         RaisedButton(
-//           onPressed: () {
-//             FlutterNfcReader.write(" ", writerController.text).then((value) {
-//               print(value.content);
-//             });
-//           },
-//           child: Text("Write"),
-//         )
-//       ],
-//     );
-//   }
-// }
