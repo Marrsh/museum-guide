@@ -41,7 +41,9 @@ getMuseumItemData(String id) async {
   return item;
 }
 
-Future<dynamic> museumItemExists(String id) async {}
+Future<dynamic> museumItemExists(String id) async {
+  //causes error (awaiting data that needs to be returned)
+}
 
 Future<void> uploadItem(museumModel item) {
   CollectionReference items =
